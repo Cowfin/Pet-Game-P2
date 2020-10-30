@@ -96,6 +96,7 @@ public class MainFrame extends javax.swing.JFrame {
         moneyLabel = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
         endDayButton = new javax.swing.JButton();
+        newErrorLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -217,6 +218,8 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        newErrorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -286,12 +289,15 @@ public class MainFrame extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(newUsernameLabel)
-                                    .addComponent(newPasswordLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(newUserNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                                    .addComponent(newPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                    .addComponent(newErrorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(newUsernameLabel)
+                                            .addComponent(newPasswordLabel))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(newUserNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                            .addComponent(newPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))))
                                 .addGap(31, 31, 31)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(newPetNameLabel)
@@ -385,13 +391,16 @@ public class MainFrame extends javax.swing.JFrame {
                             .addComponent(confirmButton)
                             .addComponent(newPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(exitButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newErrorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // When a toy is selected a label is updated to display the item's information
     private void toyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toyComboBoxActionPerformed
         switch (this.toyComboBox.getSelectedItem().toString().toLowerCase()) {
             case ("ball"):
@@ -409,6 +418,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_toyComboBoxActionPerformed
 
+    // When the login button is pressed it will scan the database for the username and password and grab the game variables and continue the game
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         if (this.usernameField == null || this.passwordField == null) {
             this.errorLabel.setVisible(true);
@@ -437,6 +447,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
 
+    // Method to quickly update the visibility of the new game buttons
     private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameButtonActionPerformed
         this.newUsernameLabel.setVisible(true);
         this.newUserNameTextField.setVisible(true);
@@ -449,30 +460,36 @@ public class MainFrame extends javax.swing.JFrame {
         this.confirmButton.setVisible(true);
     }//GEN-LAST:event_newGameButtonActionPerformed
 
+    // When the confirm button is pressed it will grab the username, password, pet name, and pet type to create a new record in the database.
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
         Pet pet = new Pet(String.valueOf(this.newPetNameTextField.getText()));
         Player player = new Player(100, pet);
         game.setPlayer(player);
 
-        pdb.newUser(this.newUserNameTextField.getText(), String.valueOf(this.newPasswordTextField.getPassword()), this.newPetTypeComboBox.getSelectedItem().toString(), this.newPetNameTextField.getText(), game.getPlayer().getMoney(), pet.getAge(), pet.getHealthLevel(), pet.getHungerLevel(), pet.getHappinessLevel(), pet.getEnergyLevel(), pet.getHungerDecay(), pet.getHappinessDecay(), pet.getEnergyDecay(), pet.getIsAlive());
+        if (!String.valueOf(this.newPasswordTextField.getPassword()).equals("") || !this.newUserNameTextField.getText().equals("")) {
+            pdb.newUser(this.newUserNameTextField.getText(), String.valueOf(this.newPasswordTextField.getPassword()), this.newPetTypeComboBox.getSelectedItem().toString(), this.newPetNameTextField.getText(), game.getPlayer().getMoney(), pet.getAge(), pet.getHealthLevel(), pet.getHungerLevel(), pet.getHappinessLevel(), pet.getEnergyLevel(), pet.getHungerDecay(), pet.getHappinessDecay(), pet.getEnergyDecay(), pet.getIsAlive());
 
-        switch (String.valueOf(this.newPetTypeComboBox.getSelectedItem()).toLowerCase()) {
-            case ("dog"):
-                this.petImage.setIcon(dog);
-                break;
-            case ("cat"):
-                this.petImage.setIcon(cat);
-                break;
+            switch (String.valueOf(this.newPetTypeComboBox.getSelectedItem()).toLowerCase()) {
+                case ("dog"):
+                    this.petImage.setIcon(dog);
+                    break;
+                case ("cat"):
+                    this.petImage.setIcon(cat);
+                    break;
+            }
+
+            this.endDayButton.setEnabled(true);
+            this.buyFoodButton.setEnabled(true);
+            this.buyToyButton.setEnabled(true);
+
+            actionPerformed();
+        } else {
+            this.newErrorLabel.setText("Invalid username/password");
         }
-
-        this.endDayButton.setEnabled(true);
-        this.buyFoodButton.setEnabled(true);
-        this.buyToyButton.setEnabled(true);
-
-        actionPerformed();
 
     }//GEN-LAST:event_confirmButtonActionPerformed
 
+    // When pressed the selected food item is bought and fed
     private void buyFoodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyFoodButtonActionPerformed
         if (!game.feedPet(this.foodComboBox.getSelectedItem().toString().toLowerCase())) {
             this.shopLabel.setText("Not enough money to purchase item");
@@ -480,6 +497,7 @@ public class MainFrame extends javax.swing.JFrame {
         actionPerformed();
     }//GEN-LAST:event_buyFoodButtonActionPerformed
 
+    // When pressed the selected toy is bought and used
     private void buyToyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyToyButtonActionPerformed
         if (!game.playPet(this.toyComboBox.getSelectedItem().toString().toLowerCase())) {
             this.shopLabel.setText("Not enough money to purchase item");
@@ -488,6 +506,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_buyToyButtonActionPerformed
 
+    // When a food item is selected a label is updated to display the item's information
     private void foodComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodComboBoxActionPerformed
         switch (this.foodComboBox.getSelectedItem().toString().toLowerCase()) {
             case ("apple"):
@@ -505,17 +524,22 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_foodComboBoxActionPerformed
 
+    // Saves and exits the application
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         pdb.saveGame(this.game);
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
+    // Cycles through one game tick, if the pet is dead then an message pops up
     private void endDayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endDayButtonActionPerformed
         game.cycleDay();
         actionPerformed();
 
         if (!game.checkPet()) {
             JOptionPane.showMessageDialog(null, game.getPlayer().getPet().getName() + " has died :(", "Game over", JOptionPane.INFORMATION_MESSAGE);
+            this.endDayButton.setEnabled(false);
+            this.buyFoodButton.setEnabled(false);
+            this.buyToyButton.setEnabled(false);
         }
     }//GEN-LAST:event_endDayButtonActionPerformed
 
@@ -576,6 +600,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel moneyLabel;
+    private javax.swing.JLabel newErrorLabel;
     private javax.swing.JButton newGameButton;
     private javax.swing.JLabel newPasswordLabel;
     private javax.swing.JPasswordField newPasswordTextField;
